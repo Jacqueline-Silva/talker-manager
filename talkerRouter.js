@@ -10,6 +10,7 @@ const talkFile = './talker.json';
 const HTTP_OK_STATUS = 200;
 const HTTP_ERR_STATUS = 404;
 const HTTP_OK = 201;
+const HTTP_204 = 204;
 
 router.get('/', (_request, response) => {
   const dataTalker = JSON.parse(fs.readFileSync(talkFile));
@@ -61,6 +62,21 @@ router.put('/:id',
     fs.writeFileSync(talkFile, JSON.stringify(dataTalker));
 
     response.status(HTTP_OK_STATUS).json(newTalker);
+  });
+
+router.delete('/:id',
+  validateToken,
+  (request, response) => {
+    const { id } = request.params;
+
+    const dataTalker = JSON.parse(fs.readFileSync(talkFile));
+    const talkerID = dataTalker.findIndex((talker) => +talker.id === +id);
+    
+    dataTalker.splice(talkerID, 1);
+
+    fs.writeFileSync(talkFile, JSON.stringify(dataTalker));
+
+    response.status(HTTP_204).send();
   });
 
 module.exports = router;
