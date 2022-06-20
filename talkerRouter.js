@@ -18,6 +18,24 @@ router.get('/', (_request, response) => {
   response.status(HTTP_OK_STATUS).json(talker);
 });
 
+router.get('/search',
+  validateToken,
+  (request, response) => {
+    const { q } = request.query;
+
+    const dataTalker = JSON.parse(fs.readFileSync(talkFile));
+    const filterTalker = dataTalker.filter(({ name }) => name.includes(q));
+
+    if (!q || q === '') {
+      return response.status(HTTP_OK_STATUS).json(dataTalker);
+    }
+    if (filterTalker.length === 0) {
+      return response.status(HTTP_OK_STATUS).json([]);
+    }
+
+    return response.status(HTTP_OK_STATUS).json(filterTalker);
+});
+
 router.get('/:id', (request, response) => {
     const { id } = request.params;
     const dataTalker = JSON.parse(fs.readFileSync(talkFile));
