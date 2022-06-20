@@ -21,10 +21,10 @@ function validateName(name, response) {
 }
 
 function validateRate(talk, response) {
-  if (!talk.rate) {
+  if (talk.rate === undefined) {
     return response.status(ERR_400).json({ message: 'O campo "rate" é obrigatório' });
   }
-  if (talk.rate < 1 || talk.rate > 5) {
+  if (!Number.isInteger(talk.rate) || talk.rate < 1 || talk.rate > 5) {
     return response.status(ERR_400)
       .json({ message: 'O campo "rate" deve ser um inteiro de 1 à 5' });
   }

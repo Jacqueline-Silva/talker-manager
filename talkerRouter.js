@@ -45,4 +45,22 @@ router.post('/',
     response.status(HTTP_OK).json(newTalker);
 });
 
+router.put('/:id',
+  validateToken,
+  validateTalker,
+  (request, response) => {
+    const { id } = request.params;
+    const { name, age, talk } = request.body;
+
+    const dataTalker = JSON.parse(fs.readFileSync(talkFile));
+    const talkerID = dataTalker.findIndex((talker) => +talker.id === +id);
+
+    const newTalker = { id: +id, name, age, talk };
+    dataTalker[talkerID] = newTalker;
+
+    fs.writeFileSync(talkFile, JSON.stringify(dataTalker));
+
+    response.status(HTTP_OK_STATUS).json(newTalker);
+  });
+
 module.exports = router;
